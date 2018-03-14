@@ -101,7 +101,7 @@ function analysisInput(input) {
 				"章節 不輸入會列出全章",
 				"默想經文 可不輸入",
 				"輸入會加入\"今日默想經文 月/日\"",
-				"以上希望對您有幫助~☺️"\.join('\n');
+				"以上希望對您有幫助~☺️"].join('\n');
 	} else if (input.indexOf("log") !== -1) {
 		return "https://dashboard.heroku.com/apps/biblelinebot/logs";
 	} else if (input.indexOf("heroku") !== -1) {
