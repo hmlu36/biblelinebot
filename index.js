@@ -93,27 +93,35 @@ app.listen(process.env.PORT || 3000, () => {
 })
 
 function analysisInput(input) {
-	var content = "";
 	
 	if (input.indexOf("小幫手") !== -1) {
-		content = "小幫手來囉~👼🏼\n需要甚麼協助!?🙏🏼\n" + "聖經查詢範例 \"默想經文 創1:1-2\"\n目錄 可輸入全名或縮寫\n章節 不輸入會列出全章\n默想經文 可不輸入\n輸入會加入\"今日默想經文 月/日\"\n以上希望對您有幫助~☺️";
+		return ["小幫手來囉~👼🏼\n需要甚麼協助!?🙏🏼",
+                "聖經查詢範例 \"默想經文 創1:1-2\"",
+				"目錄 可輸入全名或縮寫",
+				"章節 不輸入會列出全章",
+				"默想經文 可不輸入",
+				"輸入會加入\"今日默想經文 月/日\"",
+				"以上希望對您有幫助~☺️"\.join('\n');
 	} else if (input.indexOf("log") !== -1) {
-		content = "https://dashboard.heroku.com/apps/biblelinebot/logs";
+		return "https://dashboard.heroku.com/apps/biblelinebot/logs";
 	} else if (input.indexOf("heroku") !== -1) {
-		content = "https://dashboard.heroku.com/apps/biblelinebot";	
+		return "https://dashboard.heroku.com/apps/biblelinebot";	
 	} else if (input.indexOf("後台") !== -1) {
-		content = "https://developers.line.me/console/";
+		return "https://developers.line.me/console/";
 	} else if (input.indexOf("官方帳號") !== -1) {
-		content = "https://admin-official.line.me/";
+		return "https://admin-official.line.me/";
 	} else {
-		content = getBibleContent(input.replace("默想經文", ""));
-		
-		if (input.indexOf("默想經文") !== -1 && !!content) {
-			content = "今日默想經文 " + getDateString() + "\n" + content;
+		var content = getBibleContent(input.replace("默想經文", ""));
+		if (!content) {
+			return "查無資料耶~ 😅";
+		} else {
+			if (input.indexOf("默想經文") !== -1) {
+				content = "今日默想經文 " + getDateString() + "\n" + content;
+			}
+			return content;
 		}
 	}
-	
-	return !content ? "查無資料耶~ 😅" : content;
+
 }
 
 function getBibleContent(searchKey) {
