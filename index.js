@@ -22,47 +22,58 @@ var categoryData = require('./data/category.json');
 var bibleData = require('./data/bible.json');
 
 
-function QueryObject(queryString) {
-	queryString = queryString.replace(/ /g, "");
-	if (queryString.indexOf("-") !== -1) {
-		this.splitcharacter = "-";
-	} else if (queryString.indexOf("~") !== -1) {
-		this.splitcharacter = "~";
-	} else {
+class QueryObject {
+	constructor(queryString) {
+		this.category = "";
+		this.chapter = "";
+		this.verseStr = "";
+		this.verseEnd = "";
+		this.existVerse = false;
 		this.splitcharacter = "";
+		this.string2Object(queryString);
 	}
 	
-	var firstDigit = queryString.match(/\d/);
-	this.category = queryString.substring(0, queryString.indexOf(firstDigit));
-	this.chapter = queryString.substring(queryString.indexOf(firstDigit), queryString.length).split(":")[0];
-	this.verseStr = "";
-	this.verseEnd = "";
-	this.existVerse = false;
-
-	// 判斷是否有輸入節
-	if (queryString.replace(this.category + this.chapter, "").length > 0) {
-		if (!!this.splitcharacter) {
-			var verse = queryString.replace(this.category + this.chapter + ":", "").split(this.splitcharacter);
-			this.verseStr = verse[0];
-			this.verseEnd = verse[1];
-		} else {
-			this.verseStr = queryString.replace(this.category + this.chapter + ":", "");
-			this.verseEnd = this.verseStr;
-		}
-		this.existVerse = true;
-	}
-	
-	// 判斷是否須將章節轉為縮寫取資料	
-	if (!!getCode(categoryData, this.category)) {
-		this.category = getCode(categoryData, this.category);
-	}
-	
-	this.toString = function () {
+	toString() {
 		return "category:" + this.category + ", chapter:" + this.chapter + ", verseStr:" + this.verseStr + ", verseEnd:" + this.verseEnd + ", existVerse:" + this.existVerse + ", splitcharacter:" + this.splitcharacter;
 	};
 	
-	this.getKey = function() {
+	get verse() {
 		return this.category + this.chapter;
+	}
+	
+	
+	// 將字串轉成QueryObject
+	string2Object(queryString) {
+		queryString = queryString.replace(/ /g, "");
+		if (queryString.indexOf("-") !== -1) {
+			this.splitcharacter = "-";
+		} else if (queryString.indexOf("~") !== -1) {
+			this.splitcharacter = "~";
+		} else {
+			this.splitcharacter = "";
+		}
+		
+		var firstDigit = queryString.match(/\d/);
+		this.category = queryString.substring(0, queryString.indexOf(firstDigit));
+		this.chapter = queryString.substring(queryString.indexOf(firstDigit), queryString.length).split(":")[0];
+
+		// 判斷是否有輸入節
+		if (queryString.replace(this.category + this.chapter, "").length > 0) {
+			if (!!this.splitcharacter) {
+				var verse = queryString.replace(this.category + this.chapter + ":", "").split(this.splitcharacter);
+				this.verseStr = verse[0];
+				this.verseEnd = verse[1];
+			} else {
+				this.verseStr = queryString.replace(this.category + this.chapter + ":", "");
+				this.verseEnd = this.verseStr;
+			}
+			this.existVerse = true;
+		}
+		
+		// 判斷是否須將章節轉為縮寫取資料	
+		if (!!getCode(categoryData, this.category)) {
+			this.category = getCode(categoryData, this.category);
+		}
 	}
 }
 
@@ -132,7 +143,7 @@ function getBibleContent(searchKey) {
 	var verseContent = null;
 	var result = "";
 	for (var i = 0; i < bibleData.length; i++) {
-		verseContent = bibleData[i][queryObject.getKey()]
+		verseContent = bibleData[i][queryObject.verse]
 		if(!!verseContent) {
 			// 有輸入節
 			if (queryObject.existVerse) {
