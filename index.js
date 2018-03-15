@@ -197,6 +197,7 @@ function searchBibleContent(searchWord) {
 				
 				if (result.length >= 50){
 					console.log("search finish!");
+					result.push("大於上限~建議至 https://hmlu36.github.io/Bible/ 查詢");
 					return result.join("");
 				}
 			}
