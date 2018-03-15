@@ -112,7 +112,9 @@ function analysisInput(input) {
 				"章節 不輸入會列出全章",
 				"默想經文 可不輸入",
 				"輸入會加入\"今日默想經文 月/日\"",
-				"以上希望對您有幫助~☺️"].join('\n');
+				"關鍵字查詢範例 \"關鍵字 戶勒大\"",
+				"符合經文最多列出25列",
+				"以上希望有幫到您~☺️"].join('\n');
 	} else if (input.indexOf("log") !== -1) {
 		return "https://dashboard.heroku.com/apps/biblelinebot/logs";
 	} else if (input.indexOf("heroku") !== -1) {
@@ -121,6 +123,9 @@ function analysisInput(input) {
 		return "https://developers.line.me/console/";
 	} else if (input.indexOf("官方帳號") !== -1) {
 		return "https://admin-official.line.me/";
+	} else if (input.indexOf("關鍵字") !== -1) {
+		var content = searchBibleContent(input.replace("關鍵字", "").replace(" ", ""));
+		return !content ? "查無資料耶~ 😅" : content;
 	} else {
 		var content = getBibleContent(input.replace("默想經文", ""));
 		if (!content) {
@@ -172,6 +177,33 @@ function getBibleContent(searchKey) {
 		}
 	}
 	return "";
+}
+
+function searchBibleContent(searchWord) {
+	console.log(searchWord);
+	var result = [];
+	var tempVerse = [];
+	for (var i = 0; i < bibleData.length; i++) {
+		tempVerse = bibleData[i]
+		var verse = Object.keys(tempVerse);
+		
+		for (var j = 0; j < tempVerse[verse].length; j++) {
+			if (tempVerse[verse][j].indexOf(searchWord) >= 0) {
+				//console.log(tempVerse[verse][j]);
+				if (result.length > 0) {
+					result.push("\n");
+				} 
+				result.push(verse + ":" + (j+1) + " " + tempVerse[verse][j]);
+				
+				if (result.length >= 50){
+					console.log("search finish!");
+					return result.join("");
+				}
+			}
+		}
+	}
+	console.log("search finish!");
+	return result.join("");
 }
 
 //========================================================
