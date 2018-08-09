@@ -62,12 +62,12 @@ class SearchObject {
 
 class ReadObject {
 	constructor(inputString) {
-		this.category = "";
-		this.chapter = "";
-		this.verseStr = "";
-		this.verseEnd = "";
-		this.existVerse = false;
-		this.splitcharacter = "";
+		this.category = ""; // 目錄
+		this.chapter = "";  // 目錄章
+		this.verseStr = ""; // 節 開始
+		this.verseEnd = ""; // 節 結束
+		this.existVerse = false; 
+		this.splitcharacter = ""; // 分隔符號
 		this.string2Object(inputString);
 	}
 	
