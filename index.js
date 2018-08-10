@@ -85,5 +85,12 @@ function analysisInput(input) {
 			return content;
 		}
 	}
+}
 
+
+
+function getDateString() {
+	var now = new Date();
+	now.setHours(now.getHours() + 8);
+	return (now.getMonth()+1) + "/" + now.getDate();
 }
